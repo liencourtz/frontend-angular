@@ -1,13 +1,13 @@
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../../../../environments/environment.development';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { User } from '../../models/user-model';
+import { User } from '../../models/user/user.model';
 import { catchError, Observable, throwError } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
-export class UserServiceService {
+export class UserService {
 
   // Get the API URL from the environment configuration
   private readonly apiUrl = environment.apiUrl;

@@ -1,0 +1,24 @@
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  max-height: 100vh; /* Restringe a altura máxima ao tamanho da viewport */
+  overflow: hidden; /* Impede o scroll no container principal */
+}
+
+.main-container {
+  display: flex;
+  flex: 1;
+  flex-direction: row;
+  overflow: hidden; /* Impede o scroll no container principal */
+}
+
+.content {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #ccc;
+  margin: 3px;
+  border-radius: 3px;
+  padding: 20px;
+  overflow-y: auto; /* Habilita o scroll vertical apenas no conteúdo */
+}
