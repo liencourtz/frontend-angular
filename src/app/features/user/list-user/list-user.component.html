@@ -1,1 +1,30 @@
-<p>list-user works!</p>
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">ID</th>
+      <th scope="col">Name</th>
+      <th scope="col">Email</th>
+      <th scope="col">CPF</th>
+      <th scope="col">Phone</th>
+      <th scope="col">Register</th>
+      <th scope="col">Active</th>
+      <th scope="col"></th>
+      <th scope="col"></th>
+    </tr>
+  </thead>
+  <tbody>
+    @for ( user of users(); track user.id_usuario){
+        <tr>
+            <th>{{user.id_usuario}}</th>
+            <td>{{user.nome}}</td>
+            <td>{{user.email}}</td>
+            <td>{{user.cpf}}</td>
+            <td>{{user.telefone}}</td>
+            <td>{{user.data_cadastro}}</td>
+            <td>{{user.ativo}}</td>
+            <td><button type="button" class="btn btn-primary">Edit</button></td>
+            <td><button type="button" class="btn btn-danger">Delete</button></td>
+        </tr>
+    }
+  </tbody>
+</table>

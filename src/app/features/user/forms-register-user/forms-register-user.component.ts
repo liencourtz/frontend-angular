@@ -5,12 +5,17 @@ import { UserFormControls } from '../../../core/models/user/user-form.model';
 import { User } from '../../../core/models/user/user.model';
 import { Router } from '@angular/router';
 import { ModalComponent, ModalData } from "../../../layout/modal/modal.component";
+import { CpfDirective } from '../../../utils/directives/cpf.directive';
+import { PhoneNumberDirective } from '../../../utils/directives/phone-number.directive';
 
 
 
 @Component({
   selector: 'app-forms-register-user',
-  imports: [ReactiveFormsModule, ModalComponent], // Import ReactiveFormsModule for form handling
+  imports: [ReactiveFormsModule, ModalComponent, // Import ReactiveFormsModule for form handling
+    CpfDirective, // Import CpfDirective for CPF input masking
+    PhoneNumberDirective // Import PhoneNumberDirective for phone number input masking
+  ], 
   templateUrl: './forms-register-user.component.html',
   styleUrl: './forms-register-user.component.scss'
 })
@@ -33,9 +38,9 @@ export class FormsRegisterUserComponent {
     senha: new FormControl<string>('',
       { nonNullable: true, validators: [Validators.minLength(8)]}),
     cpf: new FormControl<string>('',
-      { nonNullable: true, validators: [Validators.minLength(14),Validators.maxLength(14)] }),
+      { nonNullable: true, validators: [Validators.pattern(/^\d{3}\.\d{3}\.\d{3}-\d{2}$/)] }),
     telefone: new FormControl<string>('',
-      { nonNullable: true, validators: [] }),
+      { nonNullable: true, validators: [Validators.pattern(/^(\d{2}\s)?\(\d{2}\)\s\d{5}-\d{4}$/)] }),
     data_cadastro: new FormControl<Date>(new Date(),
       { nonNullable: true, validators: [] }),
     ativo: new FormControl<boolean>(true,

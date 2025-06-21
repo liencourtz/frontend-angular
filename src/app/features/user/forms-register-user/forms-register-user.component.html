@@ -68,13 +68,24 @@
     <div class="col-md-6">
 
         <label for="validationCustom04" class="form-label">Phone number</label>
-        <input type="tel" pattern="\d{2}\s\(\d{3}\)\s\d{5}-\d{4}" placeholder="55 (000) 00000-0000" maxlength="20" class="form-control" id="validationCustom04" formControlName="telefone" required>
+
+        <!-- 
+            patterns : Make the forms request input as you want with Regex
+            if you use the pattern on the input, automatically the form will validate the input as a validator,
+            so you dont need to add it on the formControl. As equal to any another one, like required, minlength, etc.
+
+            phoneMask: This is a Directive that you can use to apply a phone mask to the input.
+        -->
+        <input phoneMask type="tel" pattern="\d{2}\s\(\d{2}\)\s\d{5}-\d{4}" placeholder="55 (000) 00000-0000" maxlength="20" class="form-control" id="validationCustom04" formControlName="telefone" required>
         
         <!-- Getter use -->
         @if(controls.telefone.invalid && (controls.telefone.dirty || controls.telefone.touched)) {
 
             @if (controls.telefone.hasError('required')) {
                 <p>Phone number is required</p>
+            }
+            @if (controls.telefone.hasError('pattern')) {
+                <p>Phone number must be in 55 (00) 00000-0000 format</p>
             }
 
         }
@@ -84,6 +95,7 @@
     <div class="col-md-3">
 
         <label for="validationCustom05" class="form-label">Register date</label>
+        <!-- you can use 'Max' and 'Min' to define the max and the min date possible here -->
         <input type="date" class="form-control" id="validationCustom05" formControlName="data_cadastro" required>
 
         <!-- Getter use -->
@@ -100,7 +112,11 @@
     <div class="col-3">
 
         <label for="validationCustom06" class="form-label">CPF</label>
-        <input type="text" pattern="\d{3}\.\d{3}\.\d{3}-\d{2}" placeholder="000.000.000-00" maxlength="14" class="form-control" id="validationCustom05" formControlName="cpf" required>
+        <!-- 
+            patterns : Make the forms request input as you want with Regex
+            cpfMask: This is a Directive that you can use to apply a CPF mask to the input.
+        -->
+        <input type="text" cpfMask pattern="\d{3}\.\d{3}\.\d{3}-\d{2}" placeholder="000.000.000-00" maxlength="14" class="form-control" id="validationCustom05" formControlName="cpf" required>
 
         <!-- Getter use -->
         @if(controls.cpf.invalid && (controls.cpf.dirty || controls.cpf.touched)) {
@@ -109,8 +125,8 @@
                 <p>CPF is required</p>
             }
 
-            @if (controls.cpf.hasError('maxlength') || controls.cpf.hasError('minlength')) {
-                <p>CPF must be 14 characters long</p>
+            @if (controls.cpf.hasError('pattern')) {
+                <p>CPF must be on 000.000.000-00 format</p>
             }
             
         }
