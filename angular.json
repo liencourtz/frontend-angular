@@ -90,6 +90,9 @@
             },
             "development": {
               "buildTarget": "frontend-angular:build:development"
+            },
+            "acceptance": {
+              "buildTarget": "frontend-angular:build:acceptance"
             }
           },
           "defaultConfiguration": "development"

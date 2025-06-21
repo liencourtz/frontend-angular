@@ -1,8 +1,8 @@
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../../../../environments/environment.development';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { User } from '../../models/user/user.model';
-import { catchError, Observable, throwError } from 'rxjs';
+import { catchError, Observable, tap, throwError } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -22,9 +22,13 @@ export class UserService {
    * @returns 
    */
   insertUser(user: User): Observable<User> {
-    return this.http.post<User>(`${this.apiUrl}/api/Usuario/InsertUsuario`, user)
+    
+    return this.http.post<User>(`${this.apiUrl}api/Usuario/InsertUsuario`, user)
       // Pipie channel the response and try to catch any errors
-      .pipe(catchError(this.handleError));
+      .pipe(
+        // Opretation to log the response to the console without modifying it
+        tap(response => console.log('📥 Resposta da API:', response))
+        , catchError(this.handleError));
   }
 
 
@@ -35,7 +39,7 @@ export class UserService {
    * @returns 
    */
   updateUser(user: User): Observable<User> {
-    return this.http.put<User>(`${this.apiUrl}/api/Usuario/UpdateUsuario`, user)
+    return this.http.put<User>(`${this.apiUrl}api/Usuario/UpdateUsuario`, user)
       .pipe(catchError(this.handleError));
   }
 
@@ -45,7 +49,7 @@ export class UserService {
    * @returns A array of User objects.
    */
   getUsers(): Observable<User[]>{
-    return this.http.get<User[]>(`${this.apiUrl}/api/Usuario/GetUsuarios`)
+    return this.http.get<User[]>(`${this.apiUrl}api/Usuario/GetUsuarios`)
     .pipe(catchError(this.handleError));
   }
 
@@ -56,7 +60,7 @@ export class UserService {
    * @returns One User object with the specified ID.
    */
   getUserById(id: number): Observable<User>{
-    return this.http.get<User>(`${this.apiUrl}/api/Usuario/${id}`)
+    return this.http.get<User>(`${this.apiUrl}api/Usuario/${id}`)
     .pipe(catchError(this.handleError));
   }
 
@@ -67,7 +71,7 @@ export class UserService {
    * @returns 
    */
   deleteUser(id: number): Observable<void>{
-    return this.http.delete<void>(`${this.apiUrl}/api/Usuario/DeleteUsuario/${id}`)
+    return this.http.delete<void>(`${this.apiUrl}api/Usuario/DeleteUsuario/${id}`)
     .pipe(catchError(this.handleError));
   }
 

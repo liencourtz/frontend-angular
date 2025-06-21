@@ -1,20 +1,23 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ViewChild } from '@angular/core';
 import { UserService } from '../../../core/services/user/user.service';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { UserFormControls } from '../../../core/models/user/user-form.model';
 import { User } from '../../../core/models/user/user.model';
 import { Router } from '@angular/router';
+import { ModalComponent, ModalData } from "../../../layout/modal/modal.component";
 
 
 
 @Component({
   selector: 'app-forms-register-user',
-  imports: [ReactiveFormsModule], // Import ReactiveFormsModule for form handling
+  imports: [ReactiveFormsModule, ModalComponent], // Import ReactiveFormsModule for form handling
   templateUrl: './forms-register-user.component.html',
   styleUrl: './forms-register-user.component.scss'
 })
   
 export class FormsRegisterUserComponent {
+
+  @ViewChild('userModal') userModal!: ModalComponent; // Referência ao modal
 
   private readonly userService = inject(UserService);
   private readonly router = inject(Router);
@@ -24,13 +27,13 @@ export class FormsRegisterUserComponent {
   // This will allow us to create a strongly typed form
   newForm = new FormGroup<UserFormControls>({
     nome: new FormControl<string>('',
-      { nonNullable: true, validators: [] }),
+      { nonNullable: true, validators: [Validators.minLength(8)] }),
     email: new FormControl<string>('',
-      { nonNullable: true, validators: [] }),
+      { nonNullable: true, validators: [Validators.email] }),
     senha: new FormControl<string>('',
-      { nonNullable: true, validators: [] }),
+      { nonNullable: true, validators: [Validators.minLength(8)]}),
     cpf: new FormControl<string>('',
-      { nonNullable: true, validators: [] }),
+      { nonNullable: true, validators: [Validators.minLength(14),Validators.maxLength(14)] }),
     telefone: new FormControl<string>('',
       { nonNullable: true, validators: [] }),
     data_cadastro: new FormControl<Date>(new Date(),
@@ -44,33 +47,79 @@ export class FormsRegisterUserComponent {
     return this.newForm.controls;
   }
   
-  async onSubmit() {
+  onSubmit() {
 
+    console.log('🔥 onSubmit foi chamado!');
+    console.log('📋 Form válido?', this.newForm.valid);
+    console.log('📝 Dados do form:', this.newForm.value);
+    
     // Check if the form is valid before proceeding
-    if (this.newForm.invalid) {
+    if (this.newForm.invalid) {      
       console.error('Form is invalid');
       this.newForm.markAllAsTouched(); // Mark all controls as touched to show validation errors
+
+      //Call modal to show error message
+      const modalData: ModalData = {
+        title: 'Erro de Validação',
+        message: 'Por favor, corrija os campos obrigatórios antes de continuar.',
+        success: false,
+        showConfirm: false
+      };
+      this.userModal.show(modalData);
+
       return;
     }
-
-    try {
-
       // Get the form values
       // Using getRawValue to include all form controls, even those that are disabled
       const userInput : User = this.newForm.getRawValue();
 
-      await this.userService.insertUser(userInput);
+      this.userService.insertUser(userInput).subscribe({
+        next: (response) => {
 
-      this.newForm.reset(); // Reset the form after successful submission
-      this.router.navigate(['/user/list']); // Navigate to the user list page after successful submission
-      console.log('Form submitted successfully:', userInput);
+          console.log('User created successfully:', response);
+          
+          // Call modal on success
+          const modalData: ModalData = {
+            title: 'Sucesso!',
+            message: `Usuário ${userInput.nome} foi cadastrado com sucesso!`,
+            success: true,
+            details: response, // Detalhes da resposta da API
+            showConfirm: true,
+            confirmText: 'OK'
+          };
+          this.userModal.show(modalData);
+        },
+        error: (error) => {
 
-    }
-    catch (error) {
-      console.error('Error submitting form:', error);
-    }
+          console.error('Error creating user:', error);
+
+          // Call modal on error
+          const modalData: ModalData = {
+            title: 'Erro no Cadastro',
+            message: error,
+            success: false,
+            details: error.error || error.message, // Detalhes do erro
+            showConfirm: false
+          };
+          this.userModal.show(modalData);
+        }
+
+      });
+
+      // this.newForm.reset(); // Reset the form after successful submission
+      // this.router.navigate(['/user/list']); // Navigate to the user list page after successful submission
 
   }
+  
+  // Método chamado quando o usuário confirma no modal
+  onModalConfirmed() {
+    console.log('✅ Usuário confirmou no modal');
+    
+    // Limpa o formulário e navega para lista
+    this.newForm.reset();
+    this.router.navigate(['/user/list']);
+  }
+  
 }    
   
 

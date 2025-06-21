@@ -1,79 +1,131 @@
 <form [formGroup]="newForm" (ngSubmit)="onSubmit()" class="row g-3 needs-validation" novalidate>
 
     <div class="col-md-4">
-        <label for="validationCustom01" class="form-label">First name</label>
-        <input type="text" class="form-control" id="validationCustom01" value="Mark" required>
-        <div class="valid-feedback">
-            Looks good!
-        </div>
-    </div>
 
-    <div class="col-md-4">
-        <label for="validationCustom02" class="form-label">Last name</label>
-        <input type="text" class="form-control" formControlName="nome" required>
-        <div class="valid-feedback">
-            Looks good!
-        </div>
-    </div>
+        <label for="validationCustom01" class="form-label">Nome</label>
+        <input type="text" class="form-control" id="validationCustom01" formControlName="nome" required>
 
-    <div class="col-md-4">
-        <label for="validationCustomUsername" class="form-label">Username</label>
-        <div class="input-group has-validation">
-            <span class="input-group-text" id="inputGroupPrepend">&#64;</span>
-            <input type="text" class="form-control" id="validationCustomUsername" aria-describedby="inputGroupPrepend"
-                required>
-            <div class="invalid-feedback">
-                Please choose a username.
+        <!-- Getter use -->
+        @if(controls.nome.invalid && (controls.nome.dirty || controls.nome.touched)) {
+
+            @if (controls.nome.hasError('required')) {
+                <p>Name is required</p>
+            }
+
+            @if(controls.nome.hasError('minlength')) {
+                <p>Name must be at least 8 characters long</p>
+            }
+
+        }@else{
+
+            <div class="valid-feedback">
+                Looks good!
             </div>
-        </div>
+
+        }
+
+    </div>
+
+    <div class="col-md-4">
+
+        <label for="validationCustom02" class="form-label">Email</label>
+        <input type="email" class="form-control" formControlName="email" required>
+        <!-- Getter use -->
+        @if(controls.email.invalid && (controls.nome.dirty || controls.nome.touched)) {
+
+            @if (controls.email.hasError('required')) {
+                <p>Email is required</p>
+            }
+
+            @if(controls.email.hasError('email')) {
+                <p>Invalid email</p>
+            }
+
+        }
+
+    </div>
+
+    <div class="col-md-4">
+
+        <label for="validationCustom03" class="form-label">Password</label>
+        <input type="password" class="form-control" id="validationCustom03" formControlName="senha" required>
+        
+        <!-- Getter use -->
+        @if(controls.senha.invalid && (controls.senha.dirty || controls.senha.touched)) {
+
+            @if (controls.senha.hasError('required')) {
+                <p>Password is required</p>
+            }
+
+            @if(controls.senha.hasError('minlength')) {
+                <p>Password must be at least 8 characters long</p>
+            }
+
+        }
+
     </div>
 
     <div class="col-md-6">
-        <label for="validationCustom03" class="form-label">City</label>
-        <input type="text" class="form-control" id="validationCustom03" required>
-        <div class="invalid-feedback">
-            Please provide a valid city.
-        </div>
+
+        <label for="validationCustom04" class="form-label">Phone number</label>
+        <input type="tel" pattern="\d{2}\s\(\d{3}\)\s\d{5}-\d{4}" placeholder="55 (000) 00000-0000" maxlength="20" class="form-control" id="validationCustom04" formControlName="telefone" required>
+        
+        <!-- Getter use -->
+        @if(controls.telefone.invalid && (controls.telefone.dirty || controls.telefone.touched)) {
+
+            @if (controls.telefone.hasError('required')) {
+                <p>Phone number is required</p>
+            }
+
+        }
+
     </div>
 
     <div class="col-md-3">
-        <label for="validationCustom04" class="form-label">State</label>
-        <select class="form-select" id="validationCustom04" required>
-            <option selected disabled value="">Choose...</option>
-            <option>...</option>
-        </select>
-        <div class="invalid-feedback">
-            Please select a valid state.
-        </div>
+
+        <label for="validationCustom05" class="form-label">Register date</label>
+        <input type="date" class="form-control" id="validationCustom05" formControlName="data_cadastro" required>
+
+        <!-- Getter use -->
+        @if(controls.data_cadastro.invalid && (controls.data_cadastro.dirty || controls.data_cadastro.touched)) {
+
+            @if (controls.data_cadastro.hasError('required')) {
+                <p>Register date is required</p>
+            }
+            
+        }
+
     </div>
 
-    <div class="col-md-3">
-        <label for="validationCustom05" class="form-label">Zip</label>
-        <input type="text" class="form-control" id="validationCustom05" required>
-        <div class="invalid-feedback">
-            Please provide a valid zip.
-        </div>
+    <div class="col-3">
+
+        <label for="validationCustom05" class="form-label">CPF</label>
+        <input type="text" pattern="\d{3}\.\d{3}\.\d{3}-\d{2}" placeholder="000.000.000-00" maxlength="14" class="form-control" id="validationCustom05" formControlName="cpf" required>
+
+        <!-- Getter use -->
+        @if(controls.cpf.invalid && (controls.cpf.dirty || controls.cpf.touched)) {
+
+            @if (controls.cpf.hasError('required')) {
+                <p>CPF is required</p>
+            }
+
+            @if (controls.cpf.hasError('maxlength') || controls.cpf.hasError('minlength')) {
+                <p>CPF must be 14 characters long</p>
+            }
+            
+        }
+        
+    </div>
+
+    <div class="col-12 form-check form-switch">
+        <input class="form-check-input" type="checkbox" role="switch" id="switchCheckDefault" formControlName="ativo">
+        <label class="form-check-label" for="switchCheckDefault">Active user</label>
     </div>
 
     <div class="col-12">
-        <div class="form-check">
-            <input class="form-check-input" type="checkbox" value="" id="invalidCheck" required>
-            <label class="form-check-label" for="invalidCheck">
-                Agree to terms and conditions
-            </label>
-            <div class="invalid-feedback">
-                You must agree before submitting.
-            </div>
-        </div>
-    </div>
-
-    <div class="form-check form-switch">
-        <input class="form-check-input" type="checkbox" role="switch" id="switchCheckDefault">
-        <label class="form-check-label" for="switchCheckDefault">Default switch checkbox input</label>
-    </div>
-
-    <div class="col-12">
-        <button class="btn btn-primary" type="submit">Submit form</button>
+        <button class="btn btn-primary" type="submit" [disabled]="newForm.invalid === true">Submit form</button>
     </div>
 
 </form>
+
+<app-modal #userModal modalId="userRegistrationModal" (confirmed)="onModalConfirmed()"></app-modal>
