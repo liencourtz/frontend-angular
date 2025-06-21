@@ -24,9 +24,9 @@ export class UserService {
   insertUser(user: User): Observable<User> {
     
     return this.http.post<User>(`${this.apiUrl}api/Usuario/InsertUsuario`, user)
-      // Pipie channel the response and try to catch any errors
+      // pipe : Channel the response and try to catch any errors
       .pipe(
-        // Opretation to log the response to the console without modifying it
+        // tap : Operation to log the response to the console without modifying it
         tap(response => console.log('📥 Resposta da API:', response))
         , catchError(this.handleError));
   }
