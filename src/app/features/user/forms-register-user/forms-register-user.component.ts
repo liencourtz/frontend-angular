@@ -12,9 +12,10 @@ import { PhoneNumberDirective } from '../../../utils/directives/phone-number.dir
 
 @Component({
   selector: 'app-forms-register-user',
-  imports: [ReactiveFormsModule, ModalComponent, // Import ReactiveFormsModule for form handling
-    CpfDirective, // Import CpfDirective for CPF input masking
-    PhoneNumberDirective // Import PhoneNumberDirective for phone number input masking
+  imports: [ReactiveFormsModule, //! Import ReactiveFormsModule for form handling
+    ModalComponent, //! Import ModalComponent for modal dialogs
+    CpfDirective, //! Import CpfDirective for CPF input masking
+    PhoneNumberDirective //! Import PhoneNumberDirective for phone number input masking
   ], 
   templateUrl: './forms-register-user.component.html',
   styleUrl: './forms-register-user.component.scss'
@@ -122,10 +123,7 @@ export class FormsRegisterUserComponent {
     
     // Limpa o formulário e navega para lista
     this.newForm.reset();
-    this.router.navigate(['/user/list']);
+    this.router.navigate(['/list-users']);
   }
-  
-}    
-  
 
-
+}

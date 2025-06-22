@@ -1,1 +1,147 @@
-<p>forms-edit-user works!</p>
+<form [formGroup]="editForm" (ngSubmit)="onSubmit()" class="row g-3 needs-validation" novalidate>
+
+    <div class="col-md-4">
+
+        <label for="validationCustom01" class="form-label">Nome</label>
+        <input type="text" class="form-control" id="validationCustom01" formControlName="nome" required>
+
+        <!-- Getter use -->
+        @if(controls.nome.invalid && (controls.nome.dirty || controls.nome.touched)) {
+
+            @if (controls.nome.hasError('required')) {
+                <p>Name is required</p>
+            }
+
+            @if(controls.nome.hasError('minlength')) {
+                <p>Name must be at least 8 characters long</p>
+            }
+
+        }@else{
+
+            <div class="valid-feedback">
+                Looks good!
+            </div>
+
+        }
+
+    </div>
+
+    <div class="col-md-4">
+
+        <label for="validationCustom02" class="form-label">Email</label>
+        <input type="email" class="form-control" formControlName="email" required>
+        <!-- Getter use -->
+        @if(controls.email.invalid && (controls.email.dirty || controls.email.touched)) {
+
+            @if (controls.email.hasError('required')) {
+                <p>Email is required</p>
+            }
+
+            @if(controls.email.hasError('email')) {
+                <p>Invalid email</p>
+            }
+
+        }
+
+    </div>
+
+    <div class="col-md-4">
+
+        <label for="validationCustom03" class="form-label">Password</label>
+        <input type="password" class="form-control" id="validationCustom03" formControlName="senha" required>
+        
+        <!-- Getter use -->
+        @if(controls.senha.invalid && (controls.senha.dirty || controls.senha.touched)) {
+
+            @if (controls.senha.hasError('required')) {
+                <p>Password is required</p>
+            }
+
+            @if(controls.senha.hasError('minlength')) {
+                <p>Password must be at least 8 characters long</p>
+            }
+
+        }
+
+    </div>
+
+    <div class="col-md-6">
+
+        <label for="validationCustom04" class="form-label">Phone number</label>
+
+        <!-- 
+            patterns : Make the forms request input as you want with Regex
+            if you use the pattern on the input, automatically the form will validate the input as a validator,
+            so you dont need to add it on the formControl. As equal to any another one, like required, minlength, etc.
+
+            phoneMask: This is a Directive that you can use to apply a phone mask to the input.
+        -->
+        <input phoneMask type="tel" pattern="\d{2}\s\(\d{2}\)\s\d{5}-\d{4}" placeholder="55 (000) 00000-0000" maxlength="20" class="form-control" id="validationCustom04" formControlName="telefone" required>
+        
+        <!-- Getter use -->
+        @if(controls.telefone.invalid && (controls.telefone.dirty || controls.telefone.touched)) {
+
+            @if (controls.telefone.hasError('required')) {
+                <p>Phone number is required</p>
+            }
+            @if (controls.telefone.hasError('pattern')) {
+                <p>Phone number must be in 55 (00) 00000-0000 format</p>
+            }
+
+        }
+
+    </div>
+
+    <div class="col-md-3">
+
+        <label for="validationCustom05" class="form-label">Register date</label>
+        <!-- you can use 'Max' and 'Min' to define the max and the min date possible here -->
+        <input type="date" class="form-control" id="validationCustom05" formControlName="data_cadastro" required>
+
+        <!-- Getter use -->
+        @if(controls.data_cadastro.invalid && (controls.data_cadastro.dirty || controls.data_cadastro.touched)) {
+
+            @if (controls.data_cadastro.hasError('required')) {
+                <p>Register date is required</p>
+            }
+            
+        }
+
+    </div>
+
+    <div class="col-3">
+
+        <label for="validationCustom06" class="form-label">CPF</label>
+        <!-- 
+            patterns : Make the forms request input as you want with Regex
+            cpfMask: This is a Directive that you can use to apply a CPF mask to the input.
+        -->
+        <input type="text" cpfMask pattern="\d{3}\.\d{3}\.\d{3}-\d{2}" placeholder="000.000.000-00" maxlength="14" class="form-control" id="validationCustom05" formControlName="cpf" required>
+
+        <!-- Getter use -->
+        @if(controls.cpf.invalid && (controls.cpf.dirty || controls.cpf.touched)) {
+
+            @if (controls.cpf.hasError('required')) {
+                <p>CPF is required</p>
+            }
+
+            @if (controls.cpf.hasError('pattern')) {
+                <p>CPF must be on 000.000.000-00 format</p>
+            }
+            
+        }
+        
+    </div>
+
+    <div class="col-12 form-check form-switch">
+        <input class="form-check-input" type="checkbox" role="switch" id="switchCheckDefault" formControlName="ativo">
+        <label class="form-check-label" for="switchCheckDefault">Active user</label>
+    </div>
+
+    <div class="col-12">
+        <button class="btn btn-primary" type="submit" [disabled]="editForm.invalid">Submit form</button>
+    </div>
+
+</form>
+
+<app-modal #userModal modalId="userRegistrationModal" (confirmed)="onModalConfirmed()"></app-modal>

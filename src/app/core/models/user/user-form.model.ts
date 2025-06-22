@@ -9,6 +9,6 @@ export interface UserFormControls{
   cpf: FormControl<string>;
   telefone: FormControl<string>;
   data_cadastro: FormControl<Date>;
-  ativo: FormControl<boolean>;
+  ativo: FormControl<boolean | null>;
   
 }

@@ -1,29 +1,69 @@
-import { Component, inject, ViewChild } from '@angular/core';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { Router } from 'express';
+import { Component, effect, inject, input, ViewChild } from '@angular/core';
+import { FormGroup, FormControl, Validators, ReactiveFormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { UserFormControls } from '../../../core/models/user/user-form.model';
 import { User } from '../../../core/models/user/user.model';
 import { UserService } from '../../../core/services/user/user.service';
 import { ModalComponent, ModalData } from '../../../layout/modal/modal.component';
+import { rxResource } from '@angular/core/rxjs-interop';
+import { of } from 'rxjs';
+import { CpfDirective } from '../../../utils/directives/cpf.directive';
+import { PhoneNumberDirective } from '../../../utils/directives/phone-number.directive';
 
 @Component({
   selector: 'app-forms-edit-user',
-  imports: [],
+  imports: [
+    ReactiveFormsModule, //! Import ReactiveFormsModule for form handling
+    ModalComponent, //! Import ModalComponent for modal dialogs
+    CpfDirective, //! Import CpfDirective for CPF input masking
+    PhoneNumberDirective //! Import PhoneNumberDirective for phone number input masking
+  ],
   templateUrl: './forms-edit-user.component.html',
   styleUrl: './forms-edit-user.component.scss'
 })
 export class FormsEditUserComponent {
 
+  /**
+   * O alias 'id' é usado para receber o ID do usuário a ser editado via parâmetro de rota.
+   * se não existe alias, o id da variavel deve ser identico ao nome do parâmetro de rota.
+   * Por exemplo, se a rota é 'user-edit/:id', o parâmetro de rota será acessível como 'id'.
+   * Automaticamente, o Angular irá mapear o parâmetro de rota para a propriedade 'id' do componente.
+  */  
+  id = input<number | undefined>(undefined, {alias : 'id_usuario'}) 
   
   @ViewChild('userModal') userModal!: ModalComponent; // Referência ao modal
 
   private readonly userService = inject(UserService);
   private readonly router = inject(Router);
 
+  // Usando rxResource para carregar o usuário
+  userResource = rxResource({
+    request: () => ({ id: this.id() }),
+    loader: ({ request }) => {
+      // Só carrega se o ID estiver definido
+      if (!request.id) {
+        return of(null);
+      }
+      return this.userService.getUserById(request.id);
+    }
+  });
+
+  // Effect para preencher o formulário quando os dados do usuário são carregados
+  private fillFormEffect = effect(() => {
+    const user = this.userResource.value();
+    
+    if (user) {
+      console.log('Usuário recuperado:', user);
+      // Fill the form with user data, this is possible because the form controls are strongly typed like the User model
+      this.editForm.patchValue(user); 
+    }
+
+  });
+
 
   // Define the form group with the structure of the UserFormControls
   // This will allow us to create a strongly typed form
-  newForm = new FormGroup<UserFormControls>({
+  editForm = new FormGroup<UserFormControls>({
     nome: new FormControl<string>('',
       { nonNullable: true, validators: [Validators.minLength(8)] }),
     email: new FormControl<string>('',
@@ -42,19 +82,19 @@ export class FormsEditUserComponent {
 
   // Getter to access form controls easily on forms
   get controls() {
-    return this.newForm.controls;
+    return this.editForm.controls;
   }
   
   onSubmit() {
 
     console.log('🔥 onSubmit foi chamado!');
-    console.log('📋 Form válido?', this.newForm.valid);
-    console.log('📝 Dados do form:', this.newForm.value);
+    console.log('📋 Form válido?', this.editForm.valid);
+    console.log('📝 Dados do form:', this.editForm.value);
     
     // Check if the form is valid before proceeding
-    if (this.newForm.invalid) {      
+    if (this.editForm.invalid) {      
       console.error('Form is invalid');
-      this.newForm.markAllAsTouched(); // Mark all controls as touched to show validation errors
+      this.editForm.markAllAsTouched(); // Mark all controls as touched to show validation errors
 
       //Call modal to show error message
       const modalData: ModalData = {
@@ -69,7 +109,8 @@ export class FormsEditUserComponent {
     }
       // Get the form values
       // Using getRawValue to include all form controls, even those that are disabled
-      const userInput : User = this.newForm.getRawValue();
+      const userInput: User = this.editForm.getRawValue();
+      userInput.id_usuario = this.id(); // Set the user ID from the input parameter
 
       this.userService.updateUser(userInput).subscribe({
         next: (response) => {
@@ -114,7 +155,7 @@ export class FormsEditUserComponent {
     console.log('✅ Usuário confirmou no modal');
     
     // Limpa o formulário e navega para lista
-    this.newForm.reset();
-    this.router.navigate(['/user/list']);
+    this.editForm.reset();
+    this.router.navigate(['/list-users']);
   }
 }

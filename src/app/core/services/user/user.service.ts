@@ -26,7 +26,7 @@ export class UserService {
     return this.http.post<User>(`${this.apiUrl}api/Usuario/InsertUsuario`, user)
       // pipe : Channel the response and try to catch any errors
       .pipe(
-        // tap : Operation to log the response to the console without modifying it
+        // tap : Operation to do anything without modifying it
         tap(response => console.log('📥 Resposta da API:', response))
         , catchError(this.handleError));
   }

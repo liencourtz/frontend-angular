@@ -31,7 +31,7 @@
         <label for="validationCustom02" class="form-label">Email</label>
         <input type="email" class="form-control" formControlName="email" required>
         <!-- Getter use -->
-        @if(controls.email.invalid && (controls.nome.dirty || controls.nome.touched)) {
+        @if(controls.email.invalid && (controls.email.dirty || controls.email.touched)) {
 
             @if (controls.email.hasError('required')) {
                 <p>Email is required</p>
